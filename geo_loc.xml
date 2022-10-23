@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+chan connect, message, end;
+chan available_users, available_users_at_location;
+
+
+
+// message channel represents - use case where client wants to communicate with another client, so it sends message to server who informs another clients, and then reports to our, this client about the delievery
+// and -use case where another, remote, client wants to communicate with our, this client, so our client juct receives message from said client, via server
+
+</declaration>
+	<template>
+		<name x="5" y="5">Client</name>
+		<declaration>// Place local declarations here.
+clock x;</declaration>
+		<location id="id0" x="-28160" y="-484">
+			<name x="-28389" y="-467">SEND_MESSAGE_TO_CLIENT_AT_LOCATION</name>
+			<label kind="invariant" x="-28211" y="-501">x&lt;=1</label>
+		</location>
+		<location id="id1" x="-27982" y="-586">
+			<name x="-28075" y="-611">CONNECTED</name>
+			<label kind="invariant" x="-28041" y="-628">x&lt;3</label>
+		</location>
+		<location id="id2" x="-27982" y="-382">
+			<name x="-28059" y="-365">SEND_AVAILABLE_USERS_AT_PARTICULAR_LOCATION</name>
+			<label kind="invariant" x="-27965" y="-382">x&lt;=1</label>
+		</location>
+		<location id="id3" x="-27795" y="-501">
+			<name x="-27795" y="-535">SEND_AVAILABLE_USERS</name>
+			<label kind="invariant" x="-27805" y="-484">x&lt;=1</label>
+		</location>
+		<location id="id4" x="-27982" y="-764">
+			<name x="-27992" y="-798">NOT_CONNECTED</name>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-28203" y="-620">message?</label>
+			<nail x="-28186" y="-560"/>
+			<nail x="-28169" y="-602"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-28186" y="-552">message?</label>
+			<nail x="-28092" y="-552"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-28092" y="-518">message!</label>
+			<nail x="-28075" y="-526"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-28194" y="-441">available_users_at_location?</label>
+			<nail x="-28007" y="-475"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-27982" y="-416">available_users_at_location!</label>
+			<nail x="-27956" y="-475"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-27939" y="-509">available_users?</label>
+			<nail x="-27905" y="-526"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-27872" y="-578">available_users!</label>
+			<nail x="-27880" y="-569"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-27837" y="-688">connect!</label>
+			<label kind="assignment" x="-27845" y="-671">x:=0</label>
+			<nail x="-27862" y="-688"/>
+			<nail x="-27837" y="-637"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-28058" y="-679">x&gt;=3</label>
+			<label kind="synchronisation" x="-28041" y="-705">end!</label>
+			<label kind="assignment" x="-28033" y="-756">x:=0</label>
+			<nail x="-28016" y="-671"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-27965" y="-730">connect!</label>
+			<label kind="assignment" x="-27956" y="-705">x:=0</label>
+			<nail x="-27948" y="-671"/>
+		</transition>
+	</template>
+	<template>
+		<name>Server</name>
+		<location id="id5" x="-909" y="-94">
+			<name x="-919" y="-128">IDLE</name>
+		</location>
+		<location id="id6" x="-569" y="-102">
+			<name x="-671" y="-128">CONNECTED</name>
+		</location>
+		<init ref="id5"/>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-476" y="-298">available_users_at_location!</label>
+			<nail x="-366" y="-218"/>
+			<nail x="-434" y="-286"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-493" y="-1">available_users_at_location?</label>
+			<nail x="-484" y="84"/>
+			<nail x="-408" y="25"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-603" y="-315">available_users!</label>
+			<nail x="-510" y="-298"/>
+			<nail x="-594" y="-298"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-620" y="67">available_users?</label>
+			<nail x="-603" y="67"/>
+			<nail x="-527" y="67"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-373" y="-103">connect?</label>
+			<nail x="-382" y="-52"/>
+			<nail x="-382" y="-128"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-679" y="-230">message!</label>
+			<nail x="-604" y="-213"/>
+			<nail x="-689" y="-213"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-688" y="25">message?</label>
+			<nail x="-696" y="25"/>
+			<nail x="-620" y="25"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-773" y="-128">end?</label>
+			<nail x="-756" y="-111"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-781" y="-69">connect?</label>
+			<nail x="-747" y="-69"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+
+
+// List one or more processes to be composed into a system.
+system Client, Server;
+    </system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; !(Client.NOT_CONNECTED and Client.x&lt;=3)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; !(Client.CONNECTED and Client.x&gt;=3)</formula>
+			<comment>not possible to reach state CONNECTED and have x&gt;3 </comment>
+		</query>
+		<query>
+			<formula>Client.CONNECTED and Client.x&gt;=3 --&gt; Client.NOT_CONNECTED</formula>
+			<comment>should be satisfied</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Client.NOT_CONNECTED</formula>
+			<comment>possible to reach state NOT_CONNECTED - should be satisfied</comment>
+		</query>
+		<query>
+			<formula>A[] Client.CONNECTED imply Client.x&lt;3</formula>
+			<comment>For all states, beeing in state CONNECTED means that x&lt;3 - should be satisfied</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Server.IDLE</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Client.SEND_AVAILABLE_USERS</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Client.CONNECTED and Client.x&lt;1 --&gt; Client.NOT_CONNECTED</formula>
+			<comment>should not be satisfied</comment>
+		</query>
+		<query>
+			<formula>A[] not deadlock
+
+ </formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
